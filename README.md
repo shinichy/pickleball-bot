@@ -13,7 +13,7 @@ cd pickleball-bot
 npm install
 ```
 
-## Run
+# Run
 Replace `WEBTRAC_USERNAME` and `WEBTRAC_PASSWORD` environment variables with your username and password.
 ```
 WEBTRAC_USERNAME=<username> WEBTRAC_PASSWORD=<password> node pickleball_reservation.js
