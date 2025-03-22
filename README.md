@@ -11,6 +11,7 @@ cd pickleball-bot
 ## Install dependencies
 ```
 npm install
+npx playwright install chromium
 ```
 
 # Run
