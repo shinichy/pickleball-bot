@@ -7,6 +7,23 @@ import { chromium } from "playwright";
   // Load environment variables
   const username = process.env.WEBTRAC_USERNAME;
   const password = process.env.WEBTRAC_PASSWORD;
+  // If this is not empty, don't click the continue button at the last step to skip reserving the court for testing
+  // purposes
+  const isNoReservation = !!process.env.NO_RESERVATION;
+  // Number of days ahead to reserve the court (default is 14 days: 2 weeks)
+  const daysAhead = Number(process.env.DAYS_AHEAD ?? 14);
+  // Court number to reserve (default is 6)
+  const courtNumber = Number(process.env.COURT ?? 6);
+  // Maximum number of retries when the warning message appears
+  const maxWarningRetries = Number(process.env.MAX_WARNING_RETRIES ?? 200);
+  // Interval (milliseconds) to reload the page when the warning message appears
+  const reloadInterval = Number(process.env.RELOAD_INTERVAL ?? 500);
+
+  console.log("isNoReservation:", isNoReservation);
+  console.log("daysAhead:", daysAhead);
+  console.log("courtNumber:", courtNumber);
+  console.log("maxWarningRetries:", maxWarningRetries);
+  console.log("reloadInterval:", reloadInterval);
 
   if (!username || !password) {
     throw new Error(
@@ -51,10 +68,9 @@ import { chromium } from "playwright";
       "https://registration.fostercity.org/wbwsc/webtrac.wsc/search.html?display=detail&module=FR"
     );
 
-    // Calculate date two weeks from today
-    const today = new Date();
-    const reservationDate = new Date(today);
-    reservationDate.setDate(today.getDate() + 14);
+    // Calculate reservation date
+    const reservationDate = new Date();
+    reservationDate.setDate(new Date().getDate() + daysAhead);
 
     const month = reservationDate.getMonth();
     const day = reservationDate.getDate();
@@ -80,11 +96,10 @@ import { chromium } from "playwright";
 
     // search
     await page.click('button[id="frwebsearch_buttonsearch"]');
-    const courtNumber = 6;
     const courtSelector = `table:has(tbody td.label-cell[data-title="Facility Description"]:has-text("Pickleball Court ${courtNumber}")) a:has-text("4:00 pm - 5:00 pm")`;
     await page.waitForSelector(courtSelector);
 
-    // select Pickleball Court 6, 4:00 PM - 5:00 PM
+    // select Pickleball Court, 4:00 PM - 5:00 PM
     await page.click(courtSelector);
 
     const addToCartSelector = 'text="Add To Cart"';
@@ -96,8 +111,6 @@ import { chromium } from "playwright";
 
     // Wait until the warning is gone
     let count = 0;
-    const maxWarningRetries = 200;
-    const reloadInterval = 500;
 
     while (
       (await page.isVisible(warningSelector)) &&
@@ -122,11 +135,18 @@ import { chromium } from "playwright";
     // Checkout
     await page.click('a[id="webcart_buttoncheckout"]');
 
-    // Continue
-    await page.click('a[id="webcheckout_buttoncontinue"]');
-    await page.waitForURL("**/confirmation.html*");
+    if (isNoReservation) {
+      console.log("Reservation is skipped. Clearing cart...");
 
-    console.log("Reservation confirmed!");
+      // Clear cart
+      await page.click('div[id="menu_cart"]');
+      await page.click('text="Empty Cart"');
+    } else {
+      // Continue
+      await page.click('a[id="webcheckout_buttoncontinue"]');
+      await page.waitForURL("**/confirmation.html*");
+      console.log("Reservation confirmed!");
+    }
   } catch (error) {
     console.error("Error during reservation:", error);
   } finally {
