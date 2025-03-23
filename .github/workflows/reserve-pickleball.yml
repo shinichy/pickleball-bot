@@ -2,12 +2,13 @@ name: Pickleball Reservation
 
 on:
   schedule:
-    - cron: "59 15 * * 5" # Runs every Friday at 7:59 AM PST (15:59 UTC)
+    - cron: "58 15 * * 5" # Runs every Friday at 7:58 AM PST (15:58 UTC)
   workflow_dispatch: # Allows manual triggering
 
 jobs:
   run-script:
     runs-on: ubuntu-latest
+    environment: shinichi
 
     steps:
       - name: Set Timezone to Pacific Time
