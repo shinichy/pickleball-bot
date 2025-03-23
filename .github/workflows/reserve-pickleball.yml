@@ -1,0 +1,31 @@
+name: Pickleball Reservation
+
+on:
+  schedule:
+    - cron: "59 15 * * 5" # Runs every Friday at 7:59 AM PST (15:59 UTC)
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set Timezone to Pacific Time
+        run: sudo timedatectl set-timezone America/Los_Angeles
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Chromium
+        run: npx playwright install chromium
+
+      - name: Run the script
+        run: node pickleball_reservation.js
