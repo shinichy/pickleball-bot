@@ -31,4 +31,11 @@ jobs:
       - name: Run the script
         run: node pickleball_reservation.js
         env:
+          WEBTRAC_USERNAME: ${{ secrets.WEBTRAC_USERNAME }}
+          WEBTRAC_PASSWORD: ${{ secrets.WEBTRAC_PASSWORD }}
+          NO_RESERVATION: ${{ vars.NO_RESERVATION }}
+          DAYS_AHEAD: ${{vars.DAYS_AHEAD}}
+          COURT: ${{ vars.COURT }}
+          MAX_WARNING_RETRIES: ${{ vars.MAX_WARNING_RETRIES }}
+          RELOAD_INTERVAL: ${{ vars.RELOAD_INTERVAL }}
           HEADLESS: true # Playwright doesn't work in non-headless mode
