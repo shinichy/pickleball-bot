@@ -1,15 +1,12 @@
 import { chromium } from "playwright";
 
 (async () => {
-  const browser = await chromium.launch({ headless: false }); // Change to true for background execution
-  const page = await browser.newPage();
-
   // Load environment variables
   const username = process.env.WEBTRAC_USERNAME;
   const password = process.env.WEBTRAC_PASSWORD;
   // If this is not empty, don't click the continue button at the last step to skip reserving the court for testing
   // purposes
-  const isNoReservation = !!process.env.NO_RESERVATION;
+  const isNoReservation = Boolean(process.env.NO_RESERVATION ?? false);
   // Number of days ahead to reserve the court (default is 14 days: 2 weeks)
   const daysAhead = Number(process.env.DAYS_AHEAD ?? 14);
   // Court number to reserve (default is 6)
@@ -18,18 +15,23 @@ import { chromium } from "playwright";
   const maxWarningRetries = Number(process.env.MAX_WARNING_RETRIES ?? 200);
   // Interval (milliseconds) to reload the page when the warning message appears
   const reloadInterval = Number(process.env.RELOAD_INTERVAL ?? 500);
+  const headless = Boolean(process.env.HEADLESS ?? false);
 
   console.log("isNoReservation:", isNoReservation);
   console.log("daysAhead:", daysAhead);
   console.log("courtNumber:", courtNumber);
   console.log("maxWarningRetries:", maxWarningRetries);
   console.log("reloadInterval:", reloadInterval);
+  console.log("headless:", headless);
 
   if (!username || !password) {
     throw new Error(
       "Error: Username or password not set in environment variables."
     );
   }
+
+  const browser = await chromium.launch({ headless: headless });
+  const page = await browser.newPage();
 
   try {
     // Navigate to the login page
