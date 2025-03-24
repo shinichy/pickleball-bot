@@ -77,6 +77,9 @@ import { chromium } from "playwright";
     const month = reservationDate.getMonth();
     const day = reservationDate.getDate();
     const year = reservationDate.getFullYear();
+    console.log(
+      `Reserving court ${courtNumber} on ${month + 1}/${day}/${year}...`
+    );
 
     // Choose date and time
     await page.click('button[class="datepicker-button"]');

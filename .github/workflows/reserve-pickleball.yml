@@ -20,13 +20,13 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: lts/*
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
-      - name: Install Chromium
-        run: npx playwright install chromium
+      - name: Install Playwright browsers and dependencies
+        run: npx playwright install --with-deps
 
       - name: Run the script
         run: node pickleball_reservation.js
@@ -39,3 +39,9 @@ jobs:
           MAX_WARNING_RETRIES: ${{ vars.MAX_WARNING_RETRIES }}
           RELOAD_INTERVAL: ${{ vars.RELOAD_INTERVAL }}
           HEADLESS: true # Playwright doesn't work in non-headless mode
+
+      - name: Upload Screenshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: screenshot.png
