@@ -41,6 +41,7 @@ jobs:
           COURT: ${{ vars.COURT }}
           MAX_WARNING_RETRIES: ${{ vars.MAX_WARNING_RETRIES }}
           RELOAD_INTERVAL: ${{ vars.RELOAD_INTERVAL }}
+          FAMILY_MEMBER: ${{ vars.FAMILY_MEMBER }}
           HEADLESS: true # Playwright doesn't work in non-headless mode
 
       - name: Upload Screenshot
