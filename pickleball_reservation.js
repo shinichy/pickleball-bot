@@ -16,6 +16,7 @@ import { chromium } from "playwright";
   // Interval (milliseconds) to reload the page when the warning message appears
   const reloadInterval = Number(process.env.RELOAD_INTERVAL ?? 500);
   const headless = Boolean(process.env.HEADLESS ?? false);
+  const familyMember = process.env.FAMILY_MEMBER;
 
   console.log("isNoReservation:", isNoReservation);
   console.log("daysAhead:", daysAhead);
@@ -23,6 +24,7 @@ import { chromium } from "playwright";
   console.log("maxWarningRetries:", maxWarningRetries);
   console.log("reloadInterval:", reloadInterval);
   console.log("headless:", headless);
+  console.log("familyMember:", familyMember);
 
   if (!username || !password) {
     throw new Error(
@@ -114,11 +116,15 @@ import { chromium } from "playwright";
     const warningSelector =
       'text="You have not satisfied any of the following Allowances."';
 
+    const warningSelectorForFamily =
+      'text="No family members are able to purchase this item"';
+
     // Wait until the warning is gone
     let count = 0;
 
     while (
-      (await page.isVisible(warningSelector)) &&
+      ((await page.isVisible(warningSelector)) ||
+        (await page.isVisible(warningSelectorForFamily))) &&
       count < maxWarningRetries
     ) {
       count++;
@@ -131,6 +137,22 @@ import { chromium } from "playwright";
 
     if (count >= maxWarningRetries) {
       throw new Error("Max retries reached. Exiting...");
+    }
+
+    // Family Member Selection
+    const familyMemberSelection = 'text="Family Member Selection"';
+    if (await page.isVisible(familyMemberSelection)) {
+      console.log("Family member selection page is shown.");
+
+      if (!familyMember) {
+        throw new Error(
+          "Family member is required. Please set the FAMILY_MEMBER environment variable."
+        );
+      }
+
+      await page.click(`div.group:has-text("${familyMember}") button`);
+      await page.click('text="Continue"');
+      console.log(`${familyMember} is selected.`);
     }
 
     // Reservation Purpose
