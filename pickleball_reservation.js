@@ -114,31 +114,12 @@ import { chromium } from "playwright";
     await page.waitForSelector(addToCartSelector);
     await page.click(addToCartSelector);
 
-    const warningSelector =
-      'text="You have not satisfied any of the following Allowances."';
-
-    const warningSelectorForFamily =
-      'text="No family members are able to purchase this item"';
-
-    // Wait until the warning is gone
-    let count = 0;
-
-    while (
-      ((await page.isVisible(warningSelector)) ||
-        (await page.isVisible(warningSelectorForFamily))) &&
-      count < maxWarningRetries
-    ) {
-      count++;
-      console.log(
-        `Warning exists. Reloading... (${count}/${maxWarningRetries})`
-      );
-      await page.reload();
-      await page.waitForTimeout(reloadInterval);
-    }
-
-    if (count >= maxWarningRetries) {
-      throw new Error("Max retries reached. Exiting...");
-    }
+    await waitUntilWarningIsGone(
+      page,
+      'text="No family members are able to purchase this item."',
+      maxWarningRetries,
+      reloadInterval
+    );
 
     // Family Member Selection
     const familyMemberSelection = 'text="Family Member Selection"';
@@ -154,6 +135,13 @@ import { chromium } from "playwright";
       await page.click(`div.group:has-text("${familyMember}") button`);
       await page.click('text="Continue"');
     }
+
+    await waitUntilWarningIsGone(
+      page,
+      'text="You have not satisfied any of the following Allowances."',
+      maxWarningRetries,
+      reloadInterval
+    );
 
     // Reservation Purpose
     await page.fill('input[id="question10465917"]', "a");
@@ -181,3 +169,23 @@ import { chromium } from "playwright";
     await browser.close();
   }
 })();
+
+async function waitUntilWarningIsGone(
+  page,
+  warningSelector,
+  maxWarningRetries,
+  reloadInterval
+) {
+  let count = 0;
+
+  while ((await page.isVisible(warningSelector)) && count < maxWarningRetries) {
+    count++;
+    console.log(`Warning exists. Reloading... (${count}/${maxWarningRetries})`);
+    await page.reload();
+    await page.waitForTimeout(reloadInterval);
+  }
+
+  if (count >= maxWarningRetries) {
+    throw new Error("Max retries reached. Exiting...");
+  }
+}
