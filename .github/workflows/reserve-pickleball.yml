@@ -36,16 +36,16 @@ jobs:
         env:
           WEBTRAC_USERNAME: ${{ secrets.WEBTRAC_USERNAME }}
           WEBTRAC_PASSWORD: ${{ secrets.WEBTRAC_PASSWORD }}
+          FAMILY_MEMBER: ${{ secrets.FAMILY_MEMBER }}
           NO_RESERVATION: ${{ vars.NO_RESERVATION }}
           DAYS_AHEAD: ${{vars.DAYS_AHEAD}}
           COURT: ${{ vars.COURT }}
           MAX_WARNING_RETRIES: ${{ vars.MAX_WARNING_RETRIES }}
           RELOAD_INTERVAL: ${{ vars.RELOAD_INTERVAL }}
-          FAMILY_MEMBER: ${{ vars.FAMILY_MEMBER }}
           HEADLESS: true # Playwright doesn't work in non-headless mode
 
       - name: Upload Screenshot
         uses: actions/upload-artifact@v4
         with:
           name: screenshots
-          path: screenshot.png
+          path: screenshot-${{ matrix.environment }}.png
