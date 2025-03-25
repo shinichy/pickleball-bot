@@ -6,7 +6,9 @@ import { chromium } from "playwright";
   const password = process.env.WEBTRAC_PASSWORD;
   // If this is not empty, don't click the continue button at the last step to skip reserving the court for testing
   // purposes
-  const isNoReservation = Boolean(process.env.NO_RESERVATION ?? false);
+  const isNoReservation =
+    process.env.NO_RESERVATION !== undefined &&
+    process.env.NO_RESERVATION !== "false";
   // Number of days ahead to reserve the court (default is 14 days: 2 weeks)
   const daysAhead = Number(process.env.DAYS_AHEAD ?? 14);
   // Court number to reserve (default is 6)

@@ -8,7 +8,10 @@ on:
 jobs:
   run-script:
     runs-on: ubuntu-latest
-    environment: shinichi
+    strategy:
+      matrix:
+        environment: [shinichi, yuki] # Define environments
+    environment: ${{ matrix.environment }} # Set the environment dynamically
 
     steps:
       - name: Set Timezone to Pacific Time
