@@ -47,5 +47,5 @@ jobs:
       - name: Upload Screenshot
         uses: actions/upload-artifact@v4
         with:
-          name: screenshots
-          path: screenshot-${{ matrix.environment }}.png
+          name: screenshots-${{ matrix.environment }}
+          path: screenshot.png

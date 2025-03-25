@@ -26,7 +26,6 @@ import { chromium } from "playwright";
   console.log("maxWarningRetries:", maxWarningRetries);
   console.log("reloadInterval:", reloadInterval);
   console.log("headless:", headless);
-  console.log("familyMember:", familyMember);
 
   if (!username || !password) {
     throw new Error(
@@ -154,7 +153,6 @@ import { chromium } from "playwright";
 
       await page.click(`div.group:has-text("${familyMember}") button`);
       await page.click('text="Continue"');
-      console.log(`${familyMember} is selected.`);
     }
 
     // Reservation Purpose
