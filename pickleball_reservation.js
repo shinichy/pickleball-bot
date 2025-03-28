@@ -158,7 +158,7 @@ import { chromium } from "playwright";
       await page.click('text="Empty Cart"');
     } else {
       // Continue
-      await page.click('a[id="webcheckout_buttoncontinue"]');
+      await page.click('button[id="webcheckout_buttoncontinue"]');
       await page.waitForURL("**/confirmation.html*");
       console.log("Reservation confirmed!");
     }
