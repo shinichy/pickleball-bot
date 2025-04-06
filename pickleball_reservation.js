@@ -89,9 +89,9 @@ import { chromium } from "playwright";
     const day = reservationDate.getDate();
     const year = reservationDate.getFullYear();
     console.log(
-      `Reserving court ${courtNumber} for ${reservationTime} on ${
+      `Reserving court ${courtNumber} for ${
         month + 1
-      }/${day}/${year}...`
+      }/${day}/${year} ${reservationTime}...`
     );
 
     // Choose date and time
