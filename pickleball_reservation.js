@@ -6,7 +6,7 @@ import { chromium } from "playwright";
   const password = process.env.WEBTRAC_PASSWORD;
   // If this is not empty, don't click the continue button at the last step to skip reserving the court for testing
   // purposes
-  const isNoReservation =
+  const noReservation =
     process.env.NO_RESERVATION !== undefined &&
     process.env.NO_RESERVATION !== "false";
   // Number of days ahead to reserve the court (default is 14 days: 2 weeks)
@@ -19,17 +19,25 @@ import { chromium } from "playwright";
   const reloadInterval = Number(process.env.RELOAD_INTERVAL ?? 500);
   const headless = Boolean(process.env.HEADLESS ?? false);
   const familyMember = process.env.FAMILY_MEMBER;
+  const reservationTime = process.env.RESERVATION_TIME;
 
-  console.log("isNoReservation:", isNoReservation);
+  console.log("noReservation:", noReservation);
   console.log("daysAhead:", daysAhead);
   console.log("courtNumber:", courtNumber);
   console.log("maxWarningRetries:", maxWarningRetries);
   console.log("reloadInterval:", reloadInterval);
   console.log("headless:", headless);
+  console.log("reservationTime:", reservationTime);
 
   if (!username || !password) {
     throw new Error(
       "Error: Username or password not set in environment variables."
+    );
+  }
+
+  if (!reservationTime) {
+    throw new Error(
+      "Error: Reservation time not set in environment variables. Please set the RESERVATION_TIME environment variable. e.g. '4:00 pm'"
     );
   }
 
@@ -104,10 +112,10 @@ import { chromium } from "playwright";
 
     // search
     await page.click('button[id="frwebsearch_buttonsearch"]');
-    const courtSelector = `table:has(tbody td.label-cell[data-title="Facility Description"]:has-text("Pickleball Court ${courtNumber}")) a:has-text("4:00 pm - 5:00 pm")`;
+    const courtSelector = `table:has(tbody td.label-cell[data-title="Facility Description"]:has-text("Pickleball Court ${courtNumber}")) a:has-text("${reservationTime} -")`;
     await page.waitForSelector(courtSelector);
 
-    // select Pickleball Court, 4:00 PM - 5:00 PM
+    // select Pickleball Court at the specified time
     await page.click(courtSelector);
 
     const addToCartSelector = 'text="Add To Cart"';
@@ -150,7 +158,7 @@ import { chromium } from "playwright";
     // Checkout
     await page.click('a[id="webcart_buttoncheckout"]');
 
-    if (isNoReservation) {
+    if (noReservation) {
       console.log("Reservation is skipped. Clearing cart...");
 
       // Clear cart
