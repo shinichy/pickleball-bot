@@ -89,7 +89,9 @@ import { chromium } from "playwright";
     const day = reservationDate.getDate();
     const year = reservationDate.getFullYear();
     console.log(
-      `Reserving court ${courtNumber} for ${reservationTime} on ${month + 1}/${day}/${year}...`
+      `Reserving court ${courtNumber} for ${reservationTime} on ${
+        month + 1
+      }/${day}/${year}...`
     );
 
     // Choose date and time
@@ -170,8 +172,6 @@ import { chromium } from "playwright";
       await page.waitForURL("**/confirmation.html*");
       console.log("Reservation confirmed!");
     }
-  } catch (error) {
-    console.error("Error during reservation:", error);
   } finally {
     await page.screenshot({ path: "screenshot.png" });
     await browser.close();
