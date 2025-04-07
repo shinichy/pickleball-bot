@@ -20,7 +20,7 @@ npx playwright install chromium
 ```
 
 ### 実行
-以下の環境変数を必要に応じて設定してから、`pickleball_reservation.js`を実行します。
+以下の[環境変数](#環境変数)を必要に応じて設定してから、`pickleball_reservation.js`を実行します。
 ```
 RESERVATION_TIME='4:00 pm' FAMILY_MEMBER='First Last' WEBTRAC_USERNAME=<username> WEBTRAC_PASSWORD=<password> node pickleball_reservation.js
 ```
@@ -68,7 +68,7 @@ GitHub Actionsを使用してプログラムを予約実行する手順です。
      - `RESERVATION_TIME`
 
 ### ワークフローファイルの設定
-`.github/workflows/reserve-pickleball.yml`を編集し、[GitHub Actions workflows](https://docs.github.com/en/actions/writing-workflows)の設定を行います。
+`.github/workflows/reserve-pickleball.yml`を編集し、[GitHub Actions workflows](https://docs.github.com/en/actions)の設定を行います。
 
 1. スケジュールの設定
 
