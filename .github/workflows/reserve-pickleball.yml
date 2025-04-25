@@ -4,7 +4,7 @@ on:
   # GitHub Actions does not automatically adjust for Daylight Saving Time.
   # As a workaround, schedule the job to run twice: once for PDT and once for PST.
   schedule:
-    - cron: "58 14,15 * * 5" # Runs every Friday at 14:58 UTC (7:58 AM PDT) and 15:58 UTC (7:58 AM PST)
+    - cron: "*/10 * * * *" # Runs every 10 minutes
   workflow_dispatch: # Allows manual triggering
 
 jobs:
